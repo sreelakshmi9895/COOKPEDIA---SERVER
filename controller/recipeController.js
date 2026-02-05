@@ -40,3 +40,62 @@ exports.relatedRecipesController = async (req,res)=>{
     }
     
 }
+
+// add recipes
+exports.addRecipesController = async (req,res)=>{
+    console.log("Inside addRecipesController");
+    const {name,ingredients,instructions,prepTimeMinutes,cookTimeMinutes,servings,difficulty,cuisine,caloriesPerServing,image,mealType} = req.body
+    try{
+  const existingRecipe = await recipes.findOne({name})
+  if(existingRecipe){
+ res.status(200).json("Recipe already in colection...Add Anothet!!!")
+  }
+ else{
+    const newRecipe = await recipes.create({
+        name,ingredients,instructions,prepTimeMinutes,cookTimeMinutes,servings,difficulty,cuisine,caloriesPerServing,image,mealType
+    })
+    res.status(200).json(newRecipe)
+ }
+    }catch(error){
+        console.log(error);
+        res.status(500).json(error)
+    }
+    
+
+
+}
+
+// delete recipe
+exports.removeRecipeController = async (req,res)=>{
+    console.log("Inside removeRecipeController");
+    const {id} = req.params
+    try{
+  const removeRecipe = await recipes.findByIdAndDelete({_id:id})
+    res.status(200).json("Recipe removed from collection")
+    }catch(error){
+        console.log(error);
+        res.status(500).json(error)
+    }
+    
+
+    
+}
+
+// edit recipe
+exports.editRecipeController = async (req,res)=>{
+    console.log("Inside editRecipeController");
+    const {id} = req.params
+    const {name,ingredients,instructions,prepTimeMinutes,cookTimeMinutes,servings,difficulty,cuisine,caloriesPerServing,image,mealType} = req.body
+    try{
+  const updateRecipe = await recipes.findByIdAndUpdate({_id:id},{
+    name,ingredients,instructions,prepTimeMinutes,cookTimeMinutes,servings,difficulty,cuisine,caloriesPerServing,image,mealType
+  },{new:true})
+    res.status(200).json(updateRecipe)
+    }catch(error){
+        console.log(error);
+        res.status(500).json(error)
+    }
+    
+
+    
+}
